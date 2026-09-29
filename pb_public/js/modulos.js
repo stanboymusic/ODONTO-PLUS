@@ -1,10 +1,9 @@
 import {list,save} from './api.js';
 import {esc,money,fd,fdt,today,badge} from './ui.js';
 import {crud} from './crud.js';
+import {usd,loadRates,monedaFields,tasaForm,conMoneda,detalle} from './tasas.js';
 const EC={Programada:'blue',Confirmada:'green',Atendida:'',Cancelada:'red'};
-const MON=['USD','VES','EUR'];
-const sum=(rows,t,m)=>rows.filter(r=>r.tipo===t&&r.moneda===m).reduce((s,r)=>s+r.monto,0);
-const balCards=rows=>MON.map(m=>{const i=sum(rows,'Ingreso',m),e=sum(rows,'Egreso',m);return `<div class="card"><small>Balance ${m}</small><b class="${i-e<0?'neg':'pos'}">${money(i-e,m)}</b><span>Ingresos ${money(i,m)} · Egresos ${money(e,m)}</span></div>`}).join('');
+const balCards=rows=>{const t=k=>rows.filter(r=>r.tipo===k).reduce((s,r)=>s+usd(r),0),i=t('Ingreso'),e=t('Egreso');return `<div class="card"><small>Ingresos (USD)</small><b class="pos">${money(i)}</b></div><div class="card"><small>Egresos (USD)</small><b class="neg">${money(e)}</b></div><div class="card"><small>Balance (USD)</small><b class="${i-e<0?'neg':'pos'}">${money(i-e)}</b></div>`};
 const pacOpts=async()=>(await list('pacientes',{sort:'nombre'})).map(p=>[p.id,p.nombre]);
 
 export async function inicio(el){
@@ -28,8 +27,10 @@ export const inventario=el=>crud(el,{col:'inventario',sort:'nombre',add:'Insumo'
   cls:r=>r.cantidad<=r.minimo?'low':'',
   acts:[['➖',r=>save('inventario',r.id,{cantidad:Math.max(0,r.cantidad-1)}),'Restar 1'],['➕',r=>save('inventario',r.id,{cantidad:r.cantidad+1}),'Sumar 1']]});
 export const CATF=['Consultas y tratamientos','Otros ingresos','Alquiler','Agua','Luz','Condominio','Bomberos','Desechos biológicos','Estacionamiento','Insumos','Otros gastos'];
-export const finanzas=el=>crud(el,{col:'movimientos',sort:'-fecha,-created',add:'Movimiento',month:true,defaults:{tipo:'Egreso',categoria:'Alquiler',moneda:'USD',fecha:today()},
+export const finanzas=el=>crud(el,{col:'movimientos',sort:'-fecha,-created',add:'Movimiento',month:true,defaults:{tipo:'Egreso',categoria:'Alquiler',moneda:'USD',tasa:1,fecha:today()},
   flt:{'Todos':'','Ingresos':'tipo="Ingreso"','Egresos':'tipo="Egreso"'},
-  fields:[{k:'tipo',l:'Tipo',t:'select',o:['Ingreso','Egreso']},{k:'categoria',l:'Categoría',t:'select',o:CATF},{k:'concepto',l:'Concepto'},{k:'monto',l:'Monto',t:'number',r:1},{k:'moneda',l:'Moneda',t:'select',o:MON},{k:'fecha',l:'Fecha',t:'date',r:1}],
-  cols:[['Fecha',r=>fd(r.fecha)],['Tipo',r=>badge(r.tipo,r.tipo==='Ingreso'?'green':'red')],['Categoría',r=>r.categoria],['Concepto',r=>r.concepto],['Monto',r=>money(r.monto,r.moneda)]],
+  fields:async()=>{await loadRates();return[{k:'tipo',l:'Tipo',t:'select',o:['Ingreso','Egreso']},{k:'categoria',l:'Categoría',t:'select',o:CATF},{k:'concepto',l:'Concepto'},...monedaFields,{k:'fecha',l:'Fecha',t:'date',r:1}]},
+  onForm:tasaForm,beforeSave:conMoneda,
+  cols:[['Fecha',r=>fd(r.fecha)],['Tipo',r=>badge(r.tipo,r.tipo==='Ingreso'?'green':'red')],['Categoría',r=>r.categoria],['Concepto',r=>r.concepto],['Monto (USD)',r=>money(usd(r))]],
+  open:r=>detalle('Detalle del movimiento',r,[['Tipo',r.tipo],['Categoría',r.categoria],['Concepto',r.concepto||'—'],['Fecha',fd(r.fecha)],['Registrado',fdt(r.created)]]),
   summary:balCards});

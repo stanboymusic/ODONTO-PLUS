@@ -22,8 +22,9 @@ export async function crud(el,o){
   const form=async r=>{
     const F=typeof o.fields==='function'?await o.fields():o.fields;
     modal(r?'Editar':(o.add?'Nuevo: '+o.add:'Nuevo'),F,r||o.defaults||{},async d=>{
+      if(o.beforeSave)d=o.beforeSave(d);
       await save(o.col,r&&r.id,r?d:{...o.defaults,...d});toast('Guardado');load();
-    });
+    },o.onForm);
   };
   $q('.add').onclick=()=>form().catch(e=>toast(e.message,1));
   $q('.search').oninput=e=>{q=e.target.value;draw()};

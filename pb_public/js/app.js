@@ -2,7 +2,8 @@ import {authed,login,logout} from './api.js';
 import {$,esc,toast} from './ui.js';
 import {inicio,citas,inventario,finanzas} from './modulos.js';
 import {pacientes} from './pacientes.js';
-const N=[['inicio','Inicio','🏠',inicio],['pacientes','Pacientes','🦷',pacientes],['citas','Citas','📅',citas],['inventario','Inventario','📦',inventario],['finanzas','Finanzas','💰',finanzas]];
+import {tasas} from './tasas.js';
+const N=[['inicio','Inicio','🏠',inicio],['pacientes','Pacientes','🦷',pacientes],['citas','Citas','📅',citas],['inventario','Inventario','📦',inventario],['finanzas','Finanzas','💰',finanzas],['tasas','Tasas','💱',tasas]];
 const root=$('#app');
 function loginView(){
   root.innerHTML=`<div class="login"><form class="card lg"><div class="logo">🦷</div><h1>Clínica Odontológica</h1><p>Inicia sesión para continuar</p><label>Correo<input name="e" type="email" required autofocus></label><label>Contraseña<input name="p" type="password" required></label><button class="btn wide">Entrar</button></form></div>`;
