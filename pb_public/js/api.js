@@ -1,4 +1,4 @@
-const BASE=location.origin;
+const BASE='https://odonto-plus-db.fly.dev';
 let token=localStorage.getItem('t')||'';
 export const authed=()=>!!token;
 export const logout=()=>{localStorage.removeItem('t');token='';location.hash='';location.reload()};
