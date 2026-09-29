@@ -47,3 +47,31 @@ label input:focus,label select:focus,label textarea:focus,.search:focus{outline:
 .dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;margin:0}.dl dt{color:var(--mut)}.dl dd{margin:0;font-weight:600}
 @media(max-width:800px){aside{inset:auto 0 0 0;width:auto;flex-direction:row;padding:6px}.brand,.out{display:none}nav{flex-direction:row;justify-content:space-around}nav a{flex-direction:column;gap:0;font-size:11.5px;padding:6px 8px}
 main{margin:0;padding:18px 14px 90px}.grid,.two{grid-template-columns:1fr}}
+
+/* ODONTO PLUS · acabado premium */
+:root{--gold:#c9a45c;--serif:Georgia,"Times New Roman",serif}
+body{background:#f3f5f4}
+aside{background:linear-gradient(180deg,#0a2a30,#0f3a41 70%,#134650);box-shadow:4px 0 24px #0a2a3022;padding:22px 14px}
+.brand{display:flex;align-items:center;gap:12px;padding:2px 8px 26px}
+.brand svg{width:38px;height:38px;flex:none}
+.brand b{display:block;font:600 17px/1.1 var(--serif);letter-spacing:.14em;color:#fff}
+.brand small{display:block;margin-top:3px;font-size:11.5px;color:#9fbcc0;letter-spacing:.04em}
+nav a{color:#b9d0d3;transition:background .15s,color .15s}
+nav a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+nav a:hover{background:#ffffff12;color:#fff}
+nav a.on{background:#ffffff1a;color:#fff;font-weight:600;box-shadow:inset 3px 0 0 var(--gold)}
+.out{border-color:#ffffff2e;color:#b9d0d3}.out:hover{background:#ffffff12;color:#fff}
+h2{font:600 30px/1.15 var(--serif);letter-spacing:.01em;margin-bottom:22px}
+.card,.tw{box-shadow:0 1px 2px #0f3a410d,0 8px 24px -12px #0f3a4126}
+.btn{background:linear-gradient(135deg,#1d6b73,#15525a);box-shadow:0 4px 12px -4px #1d6b7388}
+.chip.on{background:#0f3a41;border-color:#0f3a41}
+th{background:#f8faf9}
+.modal{border-radius:18px;box-shadow:0 30px 60px -20px #0a2a3066}
+.mtop{display:none}
+.login{background:radial-gradient(900px 500px at 15% 10%,#1b5a63 0,transparent 60%),radial-gradient(700px 500px at 90% 100%,#134650 0,transparent 60%),#0a2a30}
+.lg{padding:38px 32px;text-align:center;border:0;border-radius:20px;box-shadow:0 40px 80px -30px #000a}
+.lg label{text-align:left}
+.lg .lgo svg{width:64px;height:64px}
+.lg h1{font:600 24px/1.1 var(--serif);letter-spacing:.16em;color:var(--dk)}
+.lg .tag{color:var(--gold);font-size:12.5px;letter-spacing:.18em;margin-top:-8px}
+@media(max-width:800px){.mtop{display:flex;align-items:center;gap:10px;margin:-4px 0 14px;font:600 15px var(--serif);letter-spacing:.14em}.mtop svg{width:30px;height:30px}nav a svg{width:22px;height:22px}}
