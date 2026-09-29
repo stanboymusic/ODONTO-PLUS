@@ -5,6 +5,11 @@ import {crud} from './crud.js';
 const PF=[{k:'nombre',l:'Nombre completo',r:1},{k:'cedula',l:'Cédula'},{k:'telefono',l:'Teléfono'},{k:'email',l:'Correo'},{k:'fecha_nac',l:'Fecha de nacimiento',t:'date'},{k:'direccion',l:'Dirección'},{k:'notas',l:'Notas',t:'textarea'}];
 const edad=s=>{if(!s)return'';const[y,m,d]=s.slice(0,10).split('-').map(Number),n=new Date();let a=n.getFullYear()-y;if(n.getMonth()+1<m||(n.getMonth()+1===m&&n.getDate()<d))a--;return a+' años'};
 const EC={Programada:'blue',Confirmada:'green',Atendida:'',Cancelada:'red'};
+async function comprimir(f){
+  try{const b=await createImageBitmap(f,{imageOrientation:'from-image'}),k=Math.min(1,1600/Math.max(b.width,b.height)),c=document.createElement('canvas');
+    c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);c.getContext('2d').drawImage(b,0,0,c.width,c.height);
+    const o=await new Promise(r=>c.toBlob(r,'image/jpeg',0.8));
+    return o&&o.size<f.size?new File([o],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}):f}catch(e){return f}}
 export const pacientes=(el,id)=>id?detalle(el,id):crud(el,{col:'pacientes',sort:'nombre',add:'Paciente',fields:PF,
   cols:[['Paciente',r=>r.nombre],['Cédula',r=>r.cedula],['Teléfono',r=>r.telefono],['Edad',r=>edad(r.fecha_nac)]],
   open:r=>{location.hash='#/pacientes/'+r.id}});
@@ -35,7 +40,10 @@ async function detalle(el,id){
       after:rows=>{P=rows;rs()}}),
     async()=>{const tk=await ftoken();return crud(tb,{col:'archivos',filter:f,add:'Archivo',defaults:{paciente:id,tipo:'Radiografía'},
       fields:[{k:'tipo',l:'Tipo',t:'select',o:['Radiografía','Foto','Otro']},{k:'archivo',l:'Archivo (imagen o PDF)',t:'file'},{k:'nota',l:'Nota'}],
-      cols:[['',r=>({h:`<img class="th" src="${fileUrl(r,tk)}&thumb=100x100" onerror="this.replaceWith('📄')">`})],['Tipo',r=>r.tipo],['Nota',r=>r.nota],['Subido',r=>fd(r.created)]],
+      beforeSave:async d=>{const a=d.archivo;if(a instanceof File){
+        if(a.type.startsWith('image/'))d.archivo=await comprimir(a);
+        else if(a.size>10*1048576)throw new Error(`El PDF pesa ${(a.size/1048576).toFixed(1)} MB y el máximo es 10 MB. Comprímelo antes de subirlo (por ejemplo en ilovepdf.com/es/comprimir_pdf).`)}return d},
+      cols:[['',r=>({h:/\.pdf$/i.test(r.archivo)?'<span style="font-size:30px">📄</span>':`<img class="th" loading="lazy" src="${fileUrl(r,tk)}&thumb=100x100" onerror="this.replaceWith('🖼️')">`})],['Tipo',r=>r.tipo],['Nota',r=>r.nota],['Subido',r=>fd(r.created)]],
       open:async r=>{const w=window.open('','_blank');try{w.location=fileUrl(r,await ftoken())}catch(e){w&&w.close();toast('No se pudo abrir el archivo',1)}}})},
     ()=>crud(tb,{col:'citas',filter:f,sort:'-fecha',add:'Cita',defaults:{paciente:id,estado:'Programada'},
       fields:[{k:'fecha',l:'Fecha y hora',t:'datetime',r:1},{k:'motivo',l:'Motivo'},{k:'estado',l:'Estado',t:'select',o:Object.keys(EC)}],

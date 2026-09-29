@@ -22,7 +22,7 @@ export async function crud(el,o){
   const form=async r=>{
     const F=typeof o.fields==='function'?await o.fields():o.fields;
     modal(r?'Editar':(o.add?'Nuevo: '+o.add:'Nuevo'),F,r||o.defaults||{},async d=>{
-      if(o.beforeSave)d=o.beforeSave(d);
+      if(o.beforeSave)d=await o.beforeSave(d);
       await save(o.col,r&&r.id,r?d:{...o.defaults,...d});toast('Guardado');load();
     },o.onForm);
   };
