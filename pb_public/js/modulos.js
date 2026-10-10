@@ -1,6 +1,7 @@
 import {list,save} from './api.js';
 import {esc,money,fd,fdt,today,badge} from './ui.js';
 import {crud} from './crud.js';
+import {citasOpts} from './citas.js';
 import {usd,loadRates,monedaFields,tasaForm,conMoneda,detalle} from './tasas.js';
 const EC={Programada:'blue',Confirmada:'green',Atendida:'',Cancelada:'red'};
 const balCards=rows=>{const t=k=>rows.filter(r=>r.tipo===k).reduce((s,r)=>s+usd(r),0),i=t('Ingreso'),e=t('Egreso');return `<div class="card"><small>Ingresos (USD)</small><b class="pos">${money(i)}</b></div><div class="card"><small>Egresos (USD)</small><b class="neg">${money(e)}</b></div><div class="card"><small>Balance (USD)</small><b class="${i-e<0?'neg':'pos'}">${money(i-e)}</b></div>`};
@@ -14,11 +15,7 @@ export async function inicio(el){
   <div class="card"><h3>Insumos por reponer</h3><ul>${low.map(i=>`<li>${esc(i.nombre)} <span class="badge red">${i.cantidad} ${esc(i.unidad||'')}</span></li>`).join('')||'<li>Todo el inventario está sobre el mínimo.</li>'}</ul></div></div>
   <h3 style="margin:22px 0 10px">Balance del mes</h3><div class="sum">${balCards(mv)}</div>`;
 }
-export const citas=el=>crud(el,{col:'citas',sort:'fecha',expand:'paciente',add:'Cita',defaults:{estado:'Programada'},
-  flt:{'Próximas':`fecha>="${today()}"`,'Todas':''},
-  fields:async()=>[{k:'paciente',l:'Paciente',t:'rel',o:await pacOpts()},{k:'fecha',l:'Fecha y hora',t:'datetime',r:1},{k:'motivo',l:'Motivo'},{k:'estado',l:'Estado',t:'select',o:Object.keys(EC)}],
-  cols:[['Fecha y hora',r=>fdt(r.fecha)],['Paciente',r=>r.expand?.paciente?.nombre||''],['Motivo',r=>r.motivo],['Estado',r=>badge(r.estado,EC[r.estado])]],
-  acts:[['✔️',r=>save('citas',r.id,{estado:'Atendida'}),'Marcar como atendida']]});
+export const citas=el=>crud(el,{...citasOpts({flt:{'Próximas':`fecha>="${today()}"`,'Todas':''}})});
 const CATI=['Odontológico','Limpieza y mantenimiento','Papelería','Generales'];
 export const inventario=el=>crud(el,{col:'inventario',sort:'nombre',add:'Insumo',defaults:{categoria:CATI[0],cantidad:0,minimo:1},
   flt:{'Todos':'',...Object.fromEntries(CATI.map(c=>[c,`categoria="${c}"`]))},

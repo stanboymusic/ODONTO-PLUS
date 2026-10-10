@@ -1,15 +1,10 @@
 import {list,one,save,ftoken,fileUrl} from './api.js';
-import {esc,money,toast,fd,fdt,today,modal,badge,info} from './ui.js';
+import {esc,money,toast,fd,fdt,today,modal,badge,info,edad,comprimir} from './ui.js';
 import {loadRates,monedaFields,tasaForm,conMoneda,usd,detalle as detMoneda} from './tasas.js';
 import {crud} from './crud.js';
-const PF=[{k:'nombre',l:'Nombre completo',r:1},{k:'cedula',l:'Cédula'},{k:'telefono',l:'Teléfono'},{k:'email',l:'Correo'},{k:'fecha_nac',l:'Fecha de nacimiento',t:'date'},{k:'direccion',l:'Dirección'},{k:'notas',l:'Notas',t:'textarea'}];
-const edad=s=>{if(!s)return'';const[y,m,d]=s.slice(0,10).split('-').map(Number),n=new Date();let a=n.getFullYear()-y;if(n.getMonth()+1<m||(n.getMonth()+1===m&&n.getDate()<d))a--;return a+' años'};
-const EC={Programada:'blue',Confirmada:'green',Atendida:'',Cancelada:'red'};
-async function comprimir(f){
-  try{const b=await createImageBitmap(f,{imageOrientation:'from-image'}),k=Math.min(1,1600/Math.max(b.width,b.height)),c=document.createElement('canvas');
-    c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);c.getContext('2d').drawImage(b,0,0,c.width,c.height);
-    const o=await new Promise(r=>c.toBlob(r,'image/jpeg',0.8));
-    return o&&o.size<f.size?new File([o],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}):f}catch(e){return f}}
+import {historia,historiaSucia,limpiarSucio} from './historia.js';
+import {citasOpts} from './citas.js';
+const PF=[{k:'nombre',l:'Nombre completo',r:1},{k:'cedula',l:'Cédula'},{k:'sexo',l:'Sexo',t:'select',o:['Femenino','Masculino'],blank:true},{k:'fecha_nac',l:'Fecha de nacimiento',t:'date'},{k:'ocupacion',l:'Ocupación'},{k:'telefono',l:'Teléfono',t:'tel'},{k:'email',l:'Correo',t:'email'},{k:'direccion',l:'Dirección'},{k:'notas',l:'Notas',t:'textarea'}];
 export const pacientes=(el,id)=>id?detalle(el,id):crud(el,{col:'pacientes',sort:'nombre',add:'Paciente',fields:PF,
   cols:[['Paciente',r=>r.nombre],['Cédula',r=>r.cedula],['Teléfono',r=>r.telefono],['Edad',r=>edad(r.fecha_nac)]],
   open:r=>{location.hash='#/pacientes/'+r.id}});
@@ -22,12 +17,10 @@ async function detalle(el,id){
   const rs=()=>{const b=T.reduce((s,t)=>s+t.costo,0),a=P.reduce((s,t)=>s+usd(t),0);
     el.querySelector('#rs').innerHTML=[['Presupuesto',b,''],['Abonado',a,'pos'],['Pendiente por pagar',b-a,b-a>0?'neg':'pos']].map(([l,v,c])=>`<div class="card"><small>${l}</small><b class="${c}">${money(v)}</b></div>`).join('')};
   rs();
-  el.querySelector('#ep').onclick=()=>modal('Editar paciente',PF,p,async d=>{await save('pacientes',id,d);toast('Guardado');detalle(el,id)});
+  el.querySelector('#ep').onclick=()=>{if(historiaSucia()&&!confirm('Tienes cambios sin guardar en la historia. ¿Continuar sin guardarlos?'))return;limpiarSucio();modal('Editar paciente',PF,p,async d=>{await save('pacientes',id,d);toast('Guardado');detalle(el,id)})};
   const tb=el.querySelector('#tb');
   const tabs=[
-    async()=>{tb.innerHTML=`<form class="card hx"><label>Diagnóstico<textarea name="diagnostico" rows="4">${esc(p.diagnostico)}</textarea></label><label>Pronóstico<textarea name="pronostico" rows="3">${esc(p.pronostico)}</textarea></label><label>Plan de tratamiento<textarea name="tratamiento" rows="4">${esc(p.tratamiento)}</textarea></label><button class="btn">Guardar historia</button></form>`;
-      tb.querySelector('form').onsubmit=async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;
-        try{const d=Object.fromEntries(new FormData(e.target));Object.assign(p,await save('pacientes',id,d));toast('Historia guardada')}catch(x){toast(x.message,1)}b.disabled=false}},
+    async()=>historia(tb,p,id),
     ()=>crud(tb,{col:'tratamientos',filter:f,sort:'estado,-created',add:'Tratamiento',defaults:{paciente:id,estado:'Por realizar'},
       fields:[{k:'descripcion',l:'Tratamiento o procedimiento',r:1},{k:'estado',l:'Estado',t:'select',o:['Por realizar','Realizado']},{k:'costo',l:'Costo (USD)',t:'number'},{k:'fecha',l:'Fecha de realización',t:'date'}],
       cols:[['Tratamiento',r=>r.descripcion],['Estado',r=>badge(r.estado,r.estado==='Realizado'?'green':'red')],['Costo',r=>money(r.costo)],['Fecha',r=>fd(r.fecha)]],
@@ -45,12 +38,10 @@ async function detalle(el,id){
         else if(a.size>10*1048576)throw new Error(`El PDF pesa ${(a.size/1048576).toFixed(1)} MB y el máximo es 10 MB. Comprímelo antes de subirlo (por ejemplo en ilovepdf.com/es/comprimir_pdf).`)}return d},
       cols:[['',r=>({h:/\.pdf$/i.test(r.archivo)?'<span style="font-size:30px">📄</span>':`<img class="th" loading="lazy" src="${fileUrl(r,tk)}&thumb=100x100" onerror="this.replaceWith('🖼️')">`})],['Tipo',r=>r.tipo],['Nota',r=>r.nota],['Subido',r=>fd(r.created)]],
       open:async r=>{const w=window.open('','_blank');try{w.location=fileUrl(r,await ftoken())}catch(e){w&&w.close();toast('No se pudo abrir el archivo',1)}}})},
-    ()=>crud(tb,{col:'citas',filter:f,sort:'-fecha',add:'Cita',defaults:{paciente:id,estado:'Programada'},
-      fields:[{k:'fecha',l:'Fecha y hora',t:'datetime',r:1},{k:'motivo',l:'Motivo'},{k:'estado',l:'Estado',t:'select',o:Object.keys(EC)}],
-      cols:[['Fecha y hora',r=>fdt(r.fecha)],['Motivo',r=>r.motivo],['Estado',r=>badge(r.estado,EC[r.estado])]]}),
+    ()=>crud(tb,{...citasOpts({pac:p,filter:f}),sort:'-fecha'}),
   ];
   const chips=[...el.querySelectorAll('[data-t]')];
-  const go=async i=>{chips.forEach((c,j)=>c.classList.toggle('on',i===j));tb.innerHTML='';try{await tabs[i]()}catch(e){tb.innerHTML=`<div class="empty">${esc(e.message)}</div>`}};
+  const go=async i=>{if(historiaSucia()&&!confirm('Tienes cambios sin guardar en la historia. ¿Salir sin guardar?'))return;limpiarSucio();chips.forEach((c,j)=>c.classList.toggle('on',i===j));tb.innerHTML='';try{await tabs[i]()}catch(e){tb.innerHTML=`<div class="empty">${esc(e.message)}</div>`}};
   chips.forEach((c,i)=>c.onclick=()=>go(i));
   go(0);
 }

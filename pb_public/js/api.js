@@ -1,4 +1,4 @@
-const BASE='https://odonto-plus-db.fly.dev';
+const BASE=(typeof window!=='undefined'&&window.ODONTO_API)||'https://odonto-plus-db.fly.dev';
 let token=localStorage.getItem('t')||'';
 export const authed=()=>!!token;
 export const logout=()=>{localStorage.removeItem('t');token='';location.hash='';location.reload()};
@@ -25,3 +25,7 @@ export function save(c,id,data){
 export const del=(c,id)=>req(`collections/${c}/records/${id}`,{method:'DELETE'});
 export const ftoken=()=>req('files/token',{method:'POST'}).then(d=>d.token);
 export const fileUrl=(r,t)=>`${BASE}/api/files/${r.collectionId}/${r.id}/${r.archivo}?token=${t}`;
+export const clinica=async()=>{const r=await list('clinica',{sort:'created',perPage:1});return r[0]||null};
+export const estadoCorreo=()=>req('odonto/estado');
+export const pruebaCorreo=()=>req('odonto/prueba',{method:'POST',body:'{}'});
+export const enviarHistoria=fd=>req('odonto/enviar-historia',{method:'POST',body:fd});

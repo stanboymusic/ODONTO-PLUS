@@ -1,0 +1,2 @@
+export const ANAM=[['trat','¿Está bajo tratamiento médico?'],['alerg','¿Es alérgico a medicamento/sustancia?'],['hemo','¿Es propenso a presentar hemorragias?'],['enf','¿Padece alguna enfermedad?'],['cirug','¿Ha sido intervenido quirúrgicamente?']];
+export const ANAM_OD=[['sabor','¿Presenta mal sabor/olor de boca?'],['sangre','¿Le sangran las encías con frecuencia?'],['movil','¿Siente movilidad en los dientes?'],['sensib','¿Presenta sensibilidad/dolor en algún diente?'],['mandib','¿Presenta molestias en la mandíbula al masticar?']];
