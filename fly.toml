@@ -1,4 +1,4 @@
-app = 'odonto-plus-db'
+app = 'odontoplus'
 primary_region = 'dfw'
 
 [build]
