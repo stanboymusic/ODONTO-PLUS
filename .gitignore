@@ -1,0 +1,14 @@
+# OS & IDE
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
+
+# Build & Deploy
+.vercel/
+pb_data/
+pb_data_backup/
+
+# Graphify Cache
+graphify-out/cache/
+graphify-out/.graphify_root

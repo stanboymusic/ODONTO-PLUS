@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e545c"/>
+      <stop offset="50%" stop-color="#0a3c42"/>
+      <stop offset="100%" stop-color="#072b30"/>
+    </linearGradient>
+    <linearGradient id="toothGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f5f5"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#041618" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  <rect width="508" height="508" x="2" y="2" rx="126" fill="none" stroke="#25727d" stroke-width="3" opacity="0.4"/>
+  <g filter="url(#shadow)" transform="translate(0, 8)">
+    <!-- Tooth silhouette -->
+    <path d="M256 96c-19.2 0-32 8-64 8-40 0-64 28.8-64 68.8 0 28.8 11.2 44.8 16 76.8 4.8 35.2 9.6 102.4 35.2 102.4 20.8 0 20.8-57.6 76.8-57.6s56 57.6 76.8 57.6c25.6 0 30.4-67.2 35.2-102.4 4.8-32 16-48 16-76.8 0-40-24-68.8-64-68.8-32 0-44.8-8-64-8z" fill="url(#toothGrad)"/>
+    <!-- Clinical Plus Cross in refined gold -->
+    <path d="M256 152v80M216 192h80" stroke="#c9a45c" stroke-width="28" stroke-linecap="round"/>
+  </g>
+</svg>

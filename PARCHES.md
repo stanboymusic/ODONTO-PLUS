@@ -22,3 +22,62 @@
 - Las citas se envían por correo con invitación .ics. Gmail y Google Calendar muestran el evento con botón para agregarlo (y lo agregan solos según la configuración de cada persona). No es una sincronización directa por API de Google.
 - WhatsApp no permite adjuntar archivos por enlace: en computadora se descarga el PDF y se abre el chat para adjuntarlo; en teléfono usa «Compartir…» para enviarlo directo.
 - Los recordatorios los revisa el servidor cada 15 minutos (`min_machines_running = 1` ya lo mantiene encendido).
+
+---
+
+# ODONTO PLUS · Parche 6 (PWA + Rediseño Editorial Impeccable + Emil Kowalski)
+
+## Qué incluye
+1. **PWA Instalable completa**:
+   - `manifest.webmanifest`: configuración standalone, scope "/", nombre "Odonto Plus", paleta de color y tema marfil/teal.
+   - Iconos generados en alta resolución: 192x192, 512x512, maskable 512x512 y Apple touch icon (180x180).
+   - `sw.js`: precache automático del app shell, estrategia estricta network-first para PocketBase (`/api/*`) que **nunca** cachea datos de pacientes ni archivos clínicos.
+   - `offline.html`: pantalla de respaldo serena y elegante con botón para reintentar y reconexión automática.
+   - Flujo de actualización con toast "Nueva versión disponible · Actualizar" con `skipWaiting` controlado.
+   - Botón/disparador de instalación compatible con Android, Chromium y guía modal interactiva paso a paso para iOS Safari.
+   - Indicador discreto en tiempo real del estado de red (En línea / Sin conexión).
+   - `vercel.json` con cabeceras `Cache-Control: no-cache` para el Service Worker y tipo de contenido para el manifiesto.
+
+2. **Rediseño Editorial (Modo Impeccable: "Operate")**:
+   - Identidad serena y precisa de clínica odontológica de alta gama, sin plantillas genéricas de IA.
+   - Paleta curada en variables CSS: marfil porcelana (`--bg`), tinta verdosa oscura (`--ink`), verde-teal profundo (`--pri`), coral suave (`--coral`), verde éxito clínico (`--ok`) y acento dorado refinado (`--gold`). Soporte para modo oscuro con `prefers-color-scheme`.
+   - Tipografía con carácter: serif editorial para títulos (*Fraunces*), sans limpia para interfaz (*Plus Jakarta Sans*), y números tabulares (`font-variant-numeric: tabular-nums`) en toda la contabilidad, resúmenes e historial.
+   - Layout: sidebar fija en desktop y barra de navegación inferior móvil con 5 accesos ergonómicos (Pacientes, Citas, Inventario, Finanzas, Más con bottom sheet).
+   - Touch targets ≥ 44px en toda la interfaz.
+   - Tablas que pasan a tarjetas apiladas fluidas en móvil con jerarquía visual clara.
+   - Odontodiagrama y periodontograma completamente responsivos y táctiles.
+   - Skeletons de carga suaves con shimmer y empty states informativos con icono y llamado a la acción.
+
+3. **Física de Movimiento (Emil Kowalski)**:
+   - Microinteracciones táctiles `:active` con `scale(0.97–0.98)`.
+   - Entradas de modales, sheets y toasts desde `scale(0.95)` + `opacity: 0` (nunca desde escala 0).
+   - Transiciones estrictamente acotadas (sin `transition: all`) con cubic-bezier `(0.16, 1, 0.3, 1)` y respeto a `prefers-reduced-motion`.
+
+---
+
+# ODONTO PLUS · Parche 6.1 — Harden (revisión post-código)
+
+## Qué corrige
+
+1. **SW Network-first para todos los recursos locales** (riesgo de código obsoleto eliminado):
+   - Eliminado `cache-first`. Todo JS/CSS/HTML usa **network-first**: el navegador siempre pide la versión más reciente; solo usa caché si no hay red.
+   - El nombre de caché sigue versionado (`odonto-plus-shell-YYYYMMDD-harden`) para limpiar cachés viejos en activación.
+   - `/api/*` y cross-origin nunca se interceptan.
+
+2. **Contraste WCAG AA estricto** (≥ 4.5:1 en texto pequeño):
+   - `--coral` y `--gold` solo como relleno/ícono, nunca como texto.
+   - Nuevas variables de texto: `--coral-text: #ad3426` (5.67:1) y `--gold-text: #785712` (6.45:1).
+   - `--mut: #41575a` garantiza ≥ 4.5:1 sobre fondo marfil y blanco.
+
+3. **PDF e impresión siempre en modo claro**:
+   - jsPDF usa colores RGB explícitos, nunca variables CSS.
+   - `@media print` fuerza `--bg: #ffffff`, `--ink: #111111` y oculta nav/toasts/botones.
+
+4. **Protección de trabajo sin guardar antes de actualizar**:
+   - `hayCambiosPendientes()` en `pwa.js` detecta `historiaSucia()` y formularios modales abiertos.
+   - Confirmación nativa antes de `skipWaiting` si hay datos sin guardar.
+   - `hashchange` también bloquea la navegación si hay historia sucia.
+
+5. **Flujo de actualización robusto**:
+   - `userTriggeredUpdate` flag evita recarga automática si la doctora no inició la actualización y tiene trabajo activo.
+
