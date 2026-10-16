@@ -1,5 +1,8 @@
-// ODONTO PLUS · Service Worker (Parche 6.1 Harden)
+// ODONTO PLUS · Service Worker (Parche 6.2 — timeout network-first)
 const CACHE_NAME = 'odonto-plus-shell-20261016-harden';
+
+// Timeout para recursos del shell: si la red tarda más de esto, sirve desde caché
+const SHELL_TIMEOUT_MS = 3000;
 
 const APP_SHELL = [
   '/',
@@ -40,7 +43,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activación: limpieza inmediata de cualquier caché con versión anterior
+// Activación: limpieza de cachés viejos y toma de control inmediata
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -62,28 +65,49 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Interceptor de peticiones
+// ---------- Helper: fetch con timeout ----------
+// Intenta la red; si tarda más de timeoutMs o falla, rechaza la promesa.
+// Si la red responde OK, actualiza el caché en background antes de resolver.
+// NUNCA se llama para /api/* (excluidos antes de llegar aquí).
+function fetchConTimeout(req, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('SW_TIMEOUT')), timeoutMs);
+
+    fetch(req)
+      .then((res) => {
+        clearTimeout(timer);
+        // Actualizar caché en background con la versión fresca
+        if (res && res.status === 200 && req.method === 'GET') {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        }
+        resolve(res);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
+
+// ---------- Interceptor de peticiones ----------
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // 1. Ignorar explícitamente peticiones cross-origin (fly.dev, Google Fonts CDN, etc.) y endpoints /api/*
-  // Dejar que el navegador maneje la petición directamente por la red sin tocar el SW
+  // 1. Ignorar cross-origin (fly.dev, Google Fonts, etc.) y endpoints /api/*
+  //    El SW se hace a un lado; el navegador los maneja directo.
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api')) {
     return;
   }
 
-  // 2. Navegación HTML (páginas): Network-first con fallback a caché y offline.html
+  // 2. Navegación HTML: network-first con timeout de 3 s
+  //    - Red rápida  → HTML fresco del servidor (y actualiza caché)
+  //    - Red lenta   → timeout a los 3 s → sirve desde caché
+  //    - Sin red     → fallo inmediato   → sirve offline.html
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          }
-          return response;
-        })
+      fetchConTimeout(req, SHELL_TIMEOUT_MS)
         .catch(async () => {
           const cached = await caches.match(req);
           if (cached) return cached;
@@ -94,19 +118,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Recursos estáticos locales (HTML, JS, CSS, PNG, SVG): NETWORK-FIRST
-  // Siempre pide la versión más fresca del servidor; si no hay internet, usa el caché
+  // 3. Recursos estáticos locales (JS, CSS, imágenes, SVG, fuentes locales):
+  //    network-first con timeout de 3 s
+  //    - Red rápida  → recurso fresco (y actualiza caché en background)
+  //    - Red lenta   → timeout a los 3 s → sirve desde caché sin bloquear la app
+  //    - Sin caché   → Response.error() (el navegador marcará el recurso como fallido)
   event.respondWith(
-    fetch(req)
-      .then((networkRes) => {
-        if (networkRes && networkRes.status === 200 && req.method === 'GET') {
-          const copy = networkRes.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-        }
-        return networkRes;
-      })
-      .catch(() => {
-        return caches.match(req);
+    fetchConTimeout(req, SHELL_TIMEOUT_MS)
+      .catch(async () => {
+        const cached = await caches.match(req);
+        return cached || Response.error();
       })
   );
 });
