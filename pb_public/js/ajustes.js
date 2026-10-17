@@ -41,7 +41,7 @@ export async function ajustes(el){
       <p class="${est.smtp?'pos':'neg'}" style="margin:0"><b>${est.smtp?'Correo activo':'Correo sin configurar'}</b></p>
       ${est.smtp?`<p class="mut" style="margin:0">Se envía desde <b>${esc(est.remitente)}</b>. Las copias a la doctora llegan a <b>${esc(est.destino||'— (escribe el correo de la clínica)')}</b>.</p>
       <button class="btn ghost" id="tm">Enviar correo de prueba</button>`
-      :`<p class="mut" style="margin:0">Para enviar invitaciones, recordatorios e historias por correo hace falta conectar una cuenta de Gmail del consultorio. En el servidor se guardan dos secretos:</p><pre class="code">fly secrets set SMTP_USER="clinica@gmail.com" SMTP_PASS="contraseña de aplicación" -a odonto-plus-db</pre><p class="mut" style="margin:0">La contraseña de aplicación se crea en la cuenta de Google (Seguridad → Verificación en dos pasos → Contraseñas de aplicaciones).</p>`}
+      :`<p class="mut" style="margin:0">Para enviar invitaciones, recordatorios e historias por correo hace falta conectar una cuenta de Gmail del consultorio. En el servidor se guardan dos secretos:</p><pre class="code">fly secrets set SMTP_USER="clinica@gmail.com" SMTP_PASS="contraseña de aplicación" -a odontoplus</pre><p class="mut" style="margin:0">La contraseña de aplicación se crea en la cuenta de Google (Seguridad → Verificación en dos pasos → Contraseñas de aplicaciones).</p>`}
       <hr><p class="mut" style="margin:0"><b>Cómo funcionan las citas:</b> al agendar con correo del paciente, él y la doctora reciben la invitación con el evento para su calendario (Gmail y Google Calendar muestran el botón para agregarla). Tres días antes de la cita ambos reciben un recordatorio automático.</p>
     </div>
   </div>

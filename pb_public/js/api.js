@@ -1,4 +1,4 @@
-const BASE=(typeof window!=='undefined'&&window.ODONTO_API)||'https://odonto-plus-db.fly.dev';
+const BASE=(typeof window!=='undefined'&&window.ODONTO_API)||'https://odontoplus.fly.dev';
 let token=localStorage.getItem('t')||'';
 
 // ── Gestión de inactividad ────────────────────────────────────────────────────

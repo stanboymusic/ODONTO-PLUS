@@ -1,5 +1,5 @@
-// ODONTO PLUS · Service Worker (Parche 6.2 — timeout network-first)
-const CACHE_NAME = 'odonto-plus-shell-20261016-sesion';
+// ODONTO PLUS · Service Worker (Parche 6.3 — bypass admin PocketBase)
+const CACHE_NAME = 'odonto-plus-shell-20261017-admin-fix';
 
 // Timeout para recursos del shell: si la red tarda más de esto, sirve desde caché
 const SHELL_TIMEOUT_MS = 3000;
@@ -95,9 +95,9 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // 1. Ignorar cross-origin (fly.dev, Google Fonts, etc.) y endpoints /api/*
+  // 1. Ignorar cross-origin (fly.dev, Google Fonts, etc.), endpoints /api/* y panel /_*
   //    El SW se hace a un lado; el navegador los maneja directo.
-  if (url.origin !== self.location.origin || url.pathname.startsWith('/api')) {
+  if (url.origin !== self.location.origin || url.pathname.startsWith('/api') || url.pathname.startsWith('/_')) {
     return;
   }
 
