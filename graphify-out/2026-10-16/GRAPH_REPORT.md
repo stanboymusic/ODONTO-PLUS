@@ -1,15 +1,17 @@
 # Graph Report - clinica-odonto  (2026-10-16)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 56 files · ~150,900 words
+- Verdict: corpus is large enough that graph structure adds value.
+- Unclassified: 16 file(s) not represented in the graph (top: (none) 5, .css 3, .toml 2)
 
 ## Summary
-- 3597 nodes · 5677 edges · 306 communities (25 shown, 281 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 306 edges (avg confidence: 0.85)
+- 3644 nodes · 5753 edges · 313 communities (36 shown, 277 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 309 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `504fc84d`
+- Built from commit: `8f600c5e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -106,7 +108,7 @@
 - Server
 - gzipResponseWriter
 - Level
-- Protocols
+- r
 - RWMutex
 - Stmt
 - BaseModel
@@ -187,7 +189,7 @@
 - RecordProxy
 - RequestInfo
 - Result
-- router
+- ge
 - Row
 - Signal
 - SMTPConfig
@@ -312,6 +314,13 @@
 - VarTypeError
 - Weekday
 - pb_public/vercel.json
+- ODONTO-PLUS-parche-2/pb_hooks/odonto.pb.js
+- ODONTO-PLUS-parche-2/pb_migrations/1_clinica.js
+- ODONTO-PLUS-parche-2/pb_migrations/2_tasas_cop.js
+- ODONTO-PLUS-parche-2/pb_migrations/3_historia_documentos_citas.js
+- ODONTO PLUS · Parche 2
+- ODONTO PLUS · Parche 2
+- ODONTO PLUS · Parche 2
 
 ## God Nodes (most connected - your core abstractions)
 1. `App` - 193 edges
@@ -326,6 +335,8 @@
 10. `Se` - 55 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Qué corrige` --references--> `hayCambiosPendientes()`  [INFERRED]
+  PARCHES.md → pb_public/js/pwa.js
 - `pacOpts()` --calls--> `list()`  [EXTRACTED]
   parche maestro/ODONTO-PLUS-parche-2/pb_public/js/modulos.js → parche maestro/ODONTO-PLUS-parche-2/pb_public/js/api.js
 - `finanzas()` --indirect_call--> `conMoneda()`  [INFERRED]
@@ -334,13 +345,11 @@
   parche maestro/ODONTO-PLUS-parche-2/pb_public/js/modulos.js → parche maestro/ODONTO-PLUS-parche-2/pb_public/js/tasas.js
 - `detalle()` --indirect_call--> `conMoneda()`  [INFERRED]
   parche maestro/ODONTO-PLUS-parche-2/pb_public/js/pacientes.js → parche maestro/ODONTO-PLUS-parche-2/pb_public/js/tasas.js
-- `detalle()` --indirect_call--> `tasaForm()`  [INFERRED]
-  parche maestro/ODONTO-PLUS-parche-2/pb_public/js/pacientes.js → parche maestro/ODONTO-PLUS-parche-2/pb_public/js/tasas.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (306 total, 281 thin omitted)
+## Communities (313 total, 277 thin omitted)
 
 ### Community 0 - "types.d.ts"
 Cohesion: 0.01
@@ -350,102 +359,146 @@ Nodes (352): RFC-2388, RFC-2396, RFC-2617, RFC-3339, RFC-3986, RFC-6265, RFC-633
 Cohesion: 0.05
 Nodes (128): ajustes(), ZONAS, authed(), clinica(), del(), enviarHistoria(), estadoCorreo(), fileUrl() (+120 more)
 
-### Community 4 - "pb_public/js/compartir.js"
+### Community 5 - "Command"
 Cohesion: 0.05
-Nodes (128): ajustes(), ZONAS, authed(), clinica(), del(), enviarHistoria(), estadoCorreo(), fileUrl() (+120 more)
+Nodes (7): ea(), fa, ha(), Se, ua(), Vi(), xe()
 
 ### Community 6 - "Se"
 Cohesion: 0.05
 Nodes (7): ea(), fa, ha(), Se, ua(), Vi(), xe()
 
-### Community 7 - "Se"
-Cohesion: 0.06
-Nodes (5): fa, ha(), Se, ua(), Vi()
+### Community 8 - "Record"
+Cohesion: 0.11
+Nodes (43): Dt(), Et(), Oa(), be(), ce(), dn(), ee(), en() (+35 more)
 
 ### Community 9 - "Oa"
-Cohesion: 0.08
-Nodes (56): Dt(), Et(), Oa(), at(), be(), ce(), de(), dn() (+48 more)
+Cohesion: 0.09
+Nodes (50): cargarJsPDF(), compartir(), construirPDF(), descargar(), L(), nombreArchivo(), puedeCompartirArchivos(), rasterizar() (+42 more)
 
 ### Community 11 - "Oa"
 Cohesion: 0.11
 Nodes (43): Dt(), Et(), Oa(), be(), ce(), dn(), ee(), en() (+35 more)
 
 ### Community 13 - "pb_public/js/vendor/jspdf.umd.min.js"
-Cohesion: 0.08
-Nodes (23): aa(), C(), Ca(), ea(), Gi(), I(), Ia(), j() (+15 more)
-
-### Community 15 - "ODONTO-PLUS-parche-2/pb_hooks/lib/odonto.js"
-Cohesion: 0.17
-Nodes (30): bloqueCita(), cfg(), datosCita(), descripcion(), despuesDeGuardar(), destinoDoctora(), DIAS, enviar() (+22 more)
-
-### Community 16 - "ODONTO-PLUS-parche-2/pb_public/js/vendor/jspdf.umd.min.js"
 Cohesion: 0.10
 Nodes (18): aa(), Ca(), Gi(), I(), Ia(), Ji(), Ki(), La() (+10 more)
 
-### Community 19 - "pb_hooks/lib/odonto.js"
+### Community 15 - "ODONTO-PLUS-parche-2/pb_hooks/lib/odonto.js"
+Cohesion: 0.05
+Nodes (9): HashExp, Header, JSONMap, MapClaims, MIMEHeader, NullStringMap, Params, _TygojaDict (+1 more)
+
+### Community 16 - "ODONTO-PLUS-parche-2/pb_public/js/vendor/jspdf.umd.min.js"
 Cohesion: 0.17
 Nodes (30): bloqueCita(), cfg(), datosCita(), descripcion(), despuesDeGuardar(), destinoDoctora(), DIAS, enviar() (+22 more)
 
+### Community 17 - "Event"
+Cohesion: 0.10
+Nodes (18): aa(), Ca(), Gi(), I(), Ia(), Ji(), Ki(), La() (+10 more)
+
 ### Community 20 - "e"
+Cohesion: 0.17
+Nodes (30): bloqueCita(), cfg(), datosCita(), descripcion(), despuesDeGuardar(), destinoDoctora(), DIAS, enviar() (+22 more)
+
+### Community 21 - "Provider"
 Cohesion: 0.14
 Nodes (30): C(), l(), n(), o(), at(), b(), bt(), ct() (+22 more)
 
-### Community 24 - "e"
-Cohesion: 0.20
-Nodes (28): a(), e(), n(), b(), bn(), bt(), ct(), dt() (+20 more)
+### Community 23 - "dualDBBuilder"
+Cohesion: 0.22
+Nodes (23): list(), limpiarSucio(), balCards(), CATF, CATI, EC, finanzas(), inicio() (+15 more)
 
-### Community 29 - "a"
+### Community 26 - "File"
+Cohesion: 0.14
+Nodes (30): C(), l(), n(), o(), at(), b(), bt(), ct() (+22 more)
+
+### Community 30 - "FileField"
 Cohesion: 0.16
-Nodes (21): o(), a(), c(), d(), f(), ft(), h(), j() (+13 more)
+Nodes (21): authed(), abrirMenuMas(), icInstalar, icMas, MOBILE_MAIN_ROUTES, N, root, route() (+13 more)
 
-### Community 31 - "s"
-Cohesion: 0.16
-Nodes (20): d(), ja(), B(), E(), M(), O(), R(), m() (+12 more)
-
-### Community 38 - "r"
-Cohesion: 0.16
-Nodes (16): a(), e(), j(), ja(), E(), M(), O(), R() (+8 more)
-
-### Community 39 - "a"
+### Community 32 - "PasswordField"
 Cohesion: 0.21
 Nodes (16): a(), c(), d(), f(), h(), ke(), l(), ot() (+8 more)
 
-### Community 40 - "ApiError"
-Cohesion: 0.12
-Nodes (7): ApiError, BadRequestError, ForbiddenError, InternalServerError, NotFoundError, TooManyRequestsError, UnauthorizedError
-
-### Community 52 - "i"
-Cohesion: 0.19
-Nodes (15): er(), g(), ae(), et(), g(), i(), k(), kt() (+7 more)
-
-### Community 63 - "i"
-Cohesion: 0.18
-Nodes (15): b(), er(), g(), ae(), g(), i(), k(), kt() (+7 more)
-
-### Community 68 - "actualizacion-marca/pb_public/js/app.js"
-Cohesion: 0.19
-Nodes (6): loginView(), N, root, route(), shell(), start()
-
-### Community 69 - "s"
+### Community 34 - "RelationField"
 Cohesion: 0.26
 Nodes (13): b(), B(), an(), cn(), hn(), ln(), nn(), rn() (+5 more)
 
-### Community 78 - "_TygojaDict"
-Cohesion: 0.18
-Nodes (5): HashExp, MIMEHeader, NullStringMap, Params, _TygojaDict
+### Community 36 - "System"
+Cohesion: 0.26
+Nodes (18): fileUrl(), loginView(), crud(), CAT, dias(), documentos(), estado(), sumar() (+10 more)
 
-### Community 81 - "ge"
+### Community 42 - "Collection"
+Cohesion: 0.16
+Nodes (16): a(), e(), j(), ja(), E(), M(), O(), R() (+8 more)
+
+### Community 43 - "DateTime"
+Cohesion: 0.21
+Nodes (16): a(), c(), d(), f(), h(), ke(), l(), ot() (+8 more)
+
+### Community 44 - "Query"
+Cohesion: 0.12
+Nodes (7): ApiError, BadRequestError, ForbiddenError, InternalServerError, NotFoundError, TooManyRequestsError, UnauthorizedError
+
+### Community 49 - "RouterGroup"
+Cohesion: 0.18
+Nodes (19): ajustes(), ZONAS, _clearIdleTimer(), clinica(), del(), detenerIdleTimer(), enviarHistoria(), estadoCorreo() (+11 more)
+
+### Community 57 - "Field"
+Cohesion: 0.25
+Nodes (15): DIAS, gcalUrl(), humano(), MESES, pad(), parseF(), stamp(), waNumero() (+7 more)
+
+### Community 58 - "GeoPointField"
+Cohesion: 0.19
+Nodes (15): er(), g(), ae(), et(), g(), i(), k(), kt() (+7 more)
+
+### Community 69 - "s"
+Cohesion: 0.19
+Nodes (15): er(), g(), ae(), et(), g(), i(), k(), kt() (+7 more)
+
+### Community 74 - "cron"
+Cohesion: 0.19
+Nodes (6): loginView(), N, root, route(), shell(), start()
+
+### Community 75 - "Writer"
+Cohesion: 0.26
+Nodes (13): b(), B(), an(), cn(), hn(), ln(), nn(), rn() (+5 more)
+
+### Community 86 - "Error"
 Cohesion: 0.29
 Nodes (10): d(), ge(), pe(), qe(), ve(), we(), x(), Te() (+2 more)
 
-### Community 114 - "Message"
+### Community 92 - "r"
+Cohesion: 0.16
+Nodes (16): a(), e(), j(), ja(), E(), M(), O(), R() (+8 more)
+
+### Community 110 - "Executor"
+Cohesion: 0.47
+Nodes (3): create_icon(), eval_cubic(), parse_svg_path_points()
+
+### Community 117 - "unixDirent"
 Cohesion: 0.33
 Nodes (3): MailerMessage, Message, SubscriptionMessage
 
+### Community 173 - "ge"
+Cohesion: 0.29
+Nodes (10): d(), ge(), pe(), qe(), ve(), we(), x(), Te() (+2 more)
+
+### Community 310 - "ODONTO PLUS · Parche 2"
+Cohesion: 0.22
+Nodes (8): Cómo desplegarlo, Notas, ODONTO PLUS · Parche 2, ODONTO PLUS · Parche 6.1 — Harden (revisión post-código), ODONTO PLUS · Parche 6 (PWA + Rediseño Editorial Impeccable + Emil Kowalski), Qué corrige, Qué incluye, Qué incluye
+
+### Community 311 - "ODONTO PLUS · Parche 2"
+Cohesion: 0.40
+Nodes (4): Cómo desplegarlo, Notas, ODONTO PLUS · Parche 2, Qué incluye
+
+### Community 312 - "ODONTO PLUS · Parche 2"
+Cohesion: 0.40
+Nodes (4): Cómo desplegarlo, Notas, ODONTO PLUS · Parche 2, Qué incluye
+
 ## Knowledge Gaps
-- **13 isolated node(s):** `RFC-2388`, `RFC-2396`, `RFC-2617`, `RFC-3339`, `RFC-3986` (+8 more)
-  These have ≤1 connection - possible missing edges. (Counts symbols only; 2458 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **281 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **13 isolated node(s):** `RFC-7636`, `RFC-3339`, `RFC-2388`, `RFC-7230`, `RFC-6265` (+8 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2477 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **277 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -454,12 +507,12 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.079) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Oa()` (e.g. with `Dt()` and `kn()`) actually correct?**
   _`Oa()` has 8 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `RFC-2388`, `RFC-2396`, `RFC-2617` to the rest of the system?**
+- **What connects `RFC-7636`, `RFC-3339`, `RFC-2388` to the rest of the system?**
   _13 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `types.d.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.0056179775280898875 - nodes in this community are weakly interconnected._
-- **Why does `App` connect `App` to `types.d.ts`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+- **Why does `Command` connect `pb_public/js/compartir.js` to `types.d.ts`?**
+  _High betweenness centrality (0.061) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `Oa()` (e.g. with `Dt()` and `kn()`) actually correct?**
   _`Oa()` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **Should `App` be split into smaller, more focused modules?**
