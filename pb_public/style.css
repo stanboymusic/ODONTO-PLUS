@@ -6,6 +6,7 @@
    ========================================================================== */
 
 :root {
+  color-scheme: only light;
   /* Paleta Curada (Modo Claro - Marfil Porcelana) */
   --bg: #f9f8f5;
   --bg-subtle: #f2efe9;
@@ -1120,11 +1121,6 @@ label input:focus, label select:focus, label textarea:focus {
   box-shadow: var(--shadow-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  .hbar {
-    background: rgba(19, 39, 42, 0.94);
-  }
-}
 
 .hbar .ind {
   margin-right: auto;
@@ -1474,12 +1470,6 @@ label input:focus, label select:focus, label textarea:focus {
     align-items: center;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .mobile-bottom-nav {
-      background: var(--surface);
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
-    }
-  }
 
   .mobile-bottom-nav a, .nav-item-btn {
     display: flex;

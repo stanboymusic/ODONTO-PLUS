@@ -1,4 +1,4 @@
-import {clinica,save,estadoCorreo,pruebaCorreo} from './api.js';
+import {clinica,save,estadoCorreo,pruebaCorreo,marcarActividad,iniciarIdleTimer} from './api.js';
 import {esc,toast,emailOk} from './ui.js';
 
 const ZONAS=[['America/Caracas','Venezuela (UTC-4)'],['America/Bogota','Colombia (UTC-5)']];
@@ -69,6 +69,7 @@ export async function ajustes(el){
       toast('Sesión se mantendrá activa sin límite de tiempo');
     } else {
       localStorage.removeItem('mantener_sesion');
+      marcarActividad();iniciarIdleTimer(); // cuenta los 20 min desde ahora
       toast('Cierre automático activado — 20 min de inactividad');
     }
   };

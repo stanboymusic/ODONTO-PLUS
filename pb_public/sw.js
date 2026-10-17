@@ -1,5 +1,5 @@
 // ODONTO PLUS · Service Worker (Parche 6.2 — timeout network-first)
-const CACHE_NAME = 'odonto-plus-shell-20261016-harden';
+const CACHE_NAME = 'odonto-plus-shell-20261016-sesion';
 
 // Timeout para recursos del shell: si la red tarda más de esto, sirve desde caché
 const SHELL_TIMEOUT_MS = 3000;
