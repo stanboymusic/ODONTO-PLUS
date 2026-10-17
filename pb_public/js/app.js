@@ -1,4 +1,4 @@
-import {authed,login,logout} from './api.js';
+import {authed,login,logout,iniciarIdleTimer} from './api.js';
 import {$,esc,toast} from './ui.js';
 import {inicio,citas,inventario,finanzas} from './modulos.js';
 import {pacientes} from './pacientes.js';
@@ -305,6 +305,7 @@ function start(){
     loginView();
     return;
   }
+  iniciarIdleTimer(); // arrancar timer de inactividad al entrar
   shell();
   route();
 }

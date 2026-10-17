@@ -1,7 +1,50 @@
 const BASE=(typeof window!=='undefined'&&window.ODONTO_API)||'https://odonto-plus-db.fly.dev';
 let token=localStorage.getItem('t')||'';
+
+// ── Gestión de inactividad ────────────────────────────────────────────────────
+const TIMEOUT_MS = 20 * 60 * 1000; // 20 minutos
+let _idleTimer = null;
+
+function _clearIdleTimer() {
+  if (_idleTimer) { clearTimeout(_idleTimer); _idleTimer = null; }
+}
+
+function _resetIdleTimer() {
+  if (!token) return;                          // no hay sesión activa
+  if (localStorage.getItem('mantener_sesion') === '1') return; // usuario optó por mantener
+  _clearIdleTimer();
+  _idleTimer = setTimeout(() => {
+    if (token) logout(true); // true = cierre automático
+  }, TIMEOUT_MS);
+}
+
+// Escuchar actividad del usuario
+if (typeof window !== 'undefined') {
+  ['mousemove','keydown','touchstart','click','scroll'].forEach(ev => {
+    window.addEventListener(ev, _resetIdleTimer, { passive: true });
+  });
+}
+
+export function iniciarIdleTimer() { _resetIdleTimer(); }
+export function detenerIdleTimer() { _clearIdleTimer(); }
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const authed=()=>!!token;
-export const logout=()=>{localStorage.removeItem('t');token='';location.hash='';location.reload()};
+export const logout=(auto=false)=>{
+  _clearIdleTimer();
+  localStorage.removeItem('t');
+  token='';
+  if (auto) {
+    // Mostrar mensaje antes de recargar
+    const msg = document.createElement('div');
+    msg.style.cssText='position:fixed;inset:0;background:rgba(249,248,245,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;font-family:var(--font-sans,system-ui)';
+    msg.innerHTML='<svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#0d4b52" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><p style="font-size:1.05rem;color:#112325;text-align:center;max-width:280px;margin:0">Sesión cerrada por inactividad.<br><small style="color:#41575a">Inicia sesión de nuevo para continuar.</small></p>';
+    document.body.appendChild(msg);
+    setTimeout(()=>{location.hash='';location.reload();},1800);
+  } else {
+    location.hash='';location.reload();
+  }
+};
 async function req(path,opt={}){
   const h={};if(!(opt.body instanceof FormData))h['Content-Type']='application/json';
   if(token)h.Authorization=token;
@@ -13,6 +56,7 @@ async function req(path,opt={}){
 export async function login(email,pw){
   const d=await req('collections/users/auth-with-password',{method:'POST',body:JSON.stringify({identity:email,password:pw})});
   token=d.token;localStorage.setItem('t',token);
+  _resetIdleTimer(); // arrancar timer tras login
 }
 export const list=(c,q={})=>req(`collections/${c}/records?`+new URLSearchParams({perPage:500,...q})).then(d=>d.items);
 export const one=(c,id)=>req(`collections/${c}/records/${id}`);

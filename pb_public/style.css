@@ -69,55 +69,7 @@
   --dur-med: 220ms;
 }
 
-/* Modo Oscuro Opcional (Pizarra Petróleo Profundo con Contraste WCAG AA) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0b1718;
-    --bg-subtle: #102123;
-    --surface: #13272a;
-    --surface-raised: #173034;
-    --ink: #eaf2f3;
-    --ink-light: #c5d8da;
-    
-    /* Muted en modo oscuro (7.2:1 sobre superficie) */
-    --mut: #a2bdc0;
-    --mut-light: #779598;
-
-    --pri: #186f79;
-    --pri-hover: #1f8591;
-    --pri-active: #2799a7;
-    --pri-subtle: #15393e;
-    --pri-border: #1f4f56;
-
-    --coral: #e07262;
-    --coral-hover: #ec8576;
-    --coral-subtle: #3a1c17;
-    --coral-border: #562720;
-    --coral-text: #ff9d8f;
-
-    --ok: #28a76f;
-    --ok-hover: #32c182;
-    --ok-subtle: #123325;
-    --ok-border: #1b513a;
-    --ok-text: #6ee7b7;
-
-    --gold: #d8b46e;
-    --gold-hover: #e5c482;
-    --gold-subtle: #2d2618;
-    --gold-border: #473a21;
-    --gold-text: #f0cb78;
-
-    --ln: #1f373b;
-    --ln-strong: #2c4d53;
-
-    --dk: #071517;
-    --dk-surface: #0b1e21;
-
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
-    --shadow-md: 0 4px 14px -3px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 16px 36px -8px rgba(0, 0, 0, 0.55);
-  }
-}
+/* Modo oscuro desactivado — la app siempre usa la paleta Marfil Porcelana */
 
 /* Reset y Base */
 *, *::before, *::after {
@@ -1865,3 +1817,41 @@ label input:focus, label select:focus, label textarea:focus {
     page-break-inside: avoid;
   }
 }
+
+/* ── Toggle Switch (Ajustes › Seguridad de sesión) ─────────────────────────── */
+.toggle-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.toggle-track {
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  background: var(--ln-strong);
+  border-radius: var(--r-pill);
+  transition: background var(--dur-fast) var(--ease-spring);
+  position: relative;
+  cursor: pointer;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+#chk-mantener:checked + .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+}
+.toggle-row:active .toggle-track { transform: scale(0.97); }
+
+
+.toggle-track.is-on { background: var(--pri); }
+.toggle-track.is-on .toggle-thumb { transform: translateX(20px); }
